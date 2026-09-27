@@ -1,0 +1,273 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #F8F7F1;
+  color: #252B21;
+}
+
+/* Smooth-by-default: color/shadow/transform changes ease gently everywhere
+   unless a component already declares a more specific transition. */
+a, button, input, select, textarea, .card-hover, [class*="hover:"] {
+  transition-property: color, background-color, border-color, box-shadow, transform, opacity;
+  transition-duration: 220ms;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Thin scrollbar for timeline / table containers */
+.thin-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+.thin-scroll::-webkit-scrollbar-thumb { background: #DDE1DD; border-radius: 4px; }
+
+/* Focus ring visible for accessibility */
+:focus-visible {
+  outline: 2px solid #576855;
+  outline-offset: 2px;
+}
+
+/* ---------- Page-level entrance animation ---------- */
+.page-fade {
+  animation: pageFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes pageFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Staggered list/grid entrance ----------
+   Add `stagger-children` to a parent; each direct child fades/slides in
+   in sequence based on its position. */
+.stagger-children > * {
+  opacity: 0;
+  animation: pageFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.stagger-children > *:nth-child(1) { animation-delay: 0.02s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.07s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.12s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.17s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.22s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.27s; }
+.stagger-children > *:nth-child(n+7) { animation-delay: 0.32s; }
+
+/* ---------- Interactive lift used by cards / stat cards ---------- */
+.card-hover {
+  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 260ms cubic-bezier(0.16, 1, 0.3, 1), border-color 260ms ease;
+}
+.card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px -12px rgba(37, 43, 33, 0.18);
+}
+
+/* ---------- Button press feedback ---------- */
+.btn-press:active {
+  transform: scale(0.97);
+}
+
+/* ---------- Skeleton shimmer for loading states ---------- */
+.skeleton {
+  background: linear-gradient(90deg, #EFEEEB 25%, #E5E3DC 37%, #EFEEEB 63%);
+  background-size: 1000px 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+@keyframes shimmer {
+  0% { background-position: -500px 0; }
+  100% { background-position: 500px 0; }
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* =========================================================
+   "Pro site" visual layer: floating blobs, 3D tilt, orbiting
+   icon rings, glow pulses, gradient text. All pure CSS —
+   no extra dependencies, all disabled under reduced-motion.
+   ========================================================= */
+
+/* ---------- Soft floating motion (blobs, badges, logo marks) ---------- */
+@keyframes floatY {
+  0%, 100% { transform: translateY(0px) rotate(var(--float-rot, 0deg)); }
+  50%      { transform: translateY(-16px) rotate(var(--float-rot, 0deg)); }
+}
+.animate-float {
+  animation: floatY 6s ease-in-out infinite;
+}
+
+/* ---------- Large blurred gradient blobs used as page backdrop ---------- */
+.blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(60px);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+/* ---------- 3D tilt-on-hover wrapper (paired with the TiltCard component) ---------- */
+.tilt-wrap {
+  perspective: 1200px;
+}
+.tilt-card {
+  transform-style: preserve-3d;
+  transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+/* ---------- Orbiting icon ring (decorative, hero sections) ---------- */
+@keyframes ringSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.orbit-ring { animation: ringSpin 18s linear infinite; }
+.orbit-ring-reverse { animation: ringSpin 18s linear infinite reverse; }
+
+/* ---------- Slow continuous 3D spin (icon marks / logos) ---------- */
+@keyframes spin3d {
+  from { transform: rotateY(0deg); }
+  to   { transform: rotateY(360deg); }
+}
+.animate-spin3d {
+  animation: spin3d 9s linear infinite;
+  transform-style: preserve-3d;
+}
+
+/* ---------- Soft pulsing glow ring, used behind logos / active icons ---------- */
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(87, 104, 85, 0.35); }
+  50%      { box-shadow: 0 0 0 14px rgba(87, 104, 85, 0); }
+}
+.pulse-glow { animation: pulseGlow 2.4s ease-in-out infinite; }
+
+/* ---------- Animated gradient text for hero headlines ---------- */
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.text-gradient {
+  background-image: linear-gradient(90deg, #576855, #7B8972, #928D79, #576855);
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradientShift 6s ease infinite;
+}
+
+/* ---------- Subtle dot-grid backdrop for hero sections ---------- */
+@keyframes bgPan {
+  from { background-position: 0 0; }
+  to   { background-position: 240px 240px; }
+}
+.bg-dot-grid {
+  background-image: radial-gradient(#576855 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.08;
+  animation: bgPan 30s linear infinite;
+}
+
+/* =========================================================
+   Mascot + friendly illustration layer
+   ========================================================= */
+
+/* Gentle eye blink - held open most of the cycle, quick close */
+@keyframes mascotBlink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95%           { transform: scaleY(0.08); }
+}
+.mascot-eye { transform-origin: center; animation: mascotBlink 4.2s ease-in-out infinite; }
+.mascot-eye.delay { animation-delay: 0.08s; }
+
+/* Friendly wave, pivoted from the shoulder */
+@keyframes mascotWave {
+  0%, 100% { transform: rotate(0deg); }
+  15%      { transform: rotate(-14deg); }
+  30%      { transform: rotate(10deg); }
+  45%      { transform: rotate(-14deg); }
+  60%      { transform: rotate(6deg); }
+  75%, 100% { transform: rotate(0deg); }
+}
+.mascot-wave { transform-origin: 50% 10%; animation: mascotWave 3.2s ease-in-out infinite; animation-delay: 0.6s; }
+
+/* Soft bob, slower and shorter than the generic float (used for the mascot body) */
+@keyframes mascotBob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+.mascot-bob { animation: mascotBob 4.5s ease-in-out infinite; }
+
+/* EKG / heartbeat line that draws itself in, then loops a soft glow pulse */
+@keyframes drawLine {
+  from { stroke-dashoffset: var(--line-length, 600); }
+  to   { stroke-dashoffset: 0; }
+}
+.heartbeat-draw {
+  stroke-dasharray: var(--line-length, 600);
+  stroke-dashoffset: var(--line-length, 600);
+  animation: drawLine 2.4s cubic-bezier(0.65, 0, 0.35, 1) 0.2s forwards;
+}
+
+/* Small drifting particles used behind mascot panels */
+@keyframes particleDrift {
+  0%   { transform: translate(0, 0); opacity: 0.4; }
+  50%  { transform: translate(6px, -18px); opacity: 0.9; }
+  100% { transform: translate(0, 0); opacity: 0.4; }
+}
+.particle { animation: particleDrift 5s ease-in-out infinite; }
+
+/* Slow-shifting gradient mesh backdrop for auth side-panels */
+@keyframes meshShift {
+  0%   { transform: translate(0%, 0%) scale(1); }
+  50%  { transform: translate(-3%, 3%) scale(1.08); }
+  100% { transform: translate(0%, 0%) scale(1); }
+}
+.gradient-mesh { animation: meshShift 12s ease-in-out infinite; }
+
+/* Icon chip gently bobbing in place, staggered via inline animation-delay */
+@keyframes chipBob {
+  0%, 100% { transform: translateY(0) rotate(var(--chip-rot, 0deg)); }
+  50%      { transform: translateY(-8px) rotate(var(--chip-rot, 0deg)); }
+}
+.chip-bob { animation: chipBob 3.6s ease-in-out infinite; }
+
+/* ---------- Scroll-reveal ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------- Count-up number pop ---------- */
+@keyframes numberPop {
+  0%   { opacity: 0; transform: scale(0.85); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.number-pop { animation: numberPop 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+}
+:root {
+  --ripe-olive: #526851;
+  --clary-sage: #9FAD94;
+  --alabaster: #F3F1E5;
+  --accessible-beige: #CFC8B5;
+
+  --text-dark: #354536;
+  --text-light: #F3F1E5;
+  --border: #CFC8B5;
+  --white: #FAF9F3;
+}
