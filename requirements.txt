@@ -1,0 +1,12 @@
+fastapi
+python-jose
+passlib[argon2]
+uvicorn
+argon2-cffi
+sqlmodel
+pydantic
+python-dotenv
+pymysql
+redis
+slowapi
+fastapi-mail
